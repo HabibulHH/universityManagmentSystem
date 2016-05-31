@@ -1,0 +1,79 @@
+﻿@model  UniversityManagmentApp.Models.Department
+@{
+    ViewBag.Title = "ShowSchedule";
+}
+
+<h2>ShowSchedule</h2>
+
+<table>
+    <tr>
+        <td>
+            @Html.Label("Select a department")
+            
+        </td>
+        <td>
+            
+            @Html.DropDownListFor(m => m.Id, new SelectList(ViewBag.DepartmentBag, "Value", "Text"),new{@class="form-control"})
+
+        </td>
+    </tr>
+</table>
+
+<table class="table table-bordered table-hover table-responsive table-striped" id="courseTable">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Schedule Info</th>
+            
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+@section scripts
+{
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $("#courseTable").DataTable();
+            $("#courseTable").hide();
+            $("#Id").change(function () {
+
+                var departmentId = $("#Id").val();
+
+
+                var json = { deptId: departmentId };
+                $.ajax({
+                    type: "POST",
+                    url: '/Schedule/ShowSchedule',
+                    //url: '@Url.Action("ViewCourseStatistics", "Course")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        table.clear();
+                        $("#courseTable").show();
+
+                        $.each(data, function (key, value) {
+
+
+                            table.row.add([
+                                value.CourseCode,
+                                value.Name,
+                                value.info
+                                
+                            ]).draw(false);
+
+                        });
+                        $("#courseTable").DataTable();
+
+                    }
+                });
+
+            });
+
+
+        });
+    </script>
+}
+

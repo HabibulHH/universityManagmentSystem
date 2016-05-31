@@ -1,0 +1,140 @@
+﻿@using System.Web.Mvc.Html
+@using Newtonsoft.Json
+@model UniversityManagmentApp.Models.Student
+@{
+    ViewBag.Title = "RegisterStudent";
+}
+
+<link href="~/Time/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "register" }))
+        {
+            <fieldset>
+                <legend>Register Student</legend>
+                <table>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(m => m.Name)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.Name)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(m => m.Email)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(m => m.ContactNo)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.ContactNo, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.ContactNo)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(m => m.Address)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.Address)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(m => m.Department)
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(m => m.Department, new SelectList(ViewBag.departmentBag, "Value", "Text"), new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(m => m.Department)
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td>
+                            @Html.LabelFor(m => m.Date)
+                        </td>
+
+                        <td>
+                            
+
+                            <div class='input-group date' id='Date'>
+                                <input type='text' id="Date" name="Date" class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+
+                        </td>
+
+                        
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Register" id="register" name="register" class="btn btn-success" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @if (ViewBag.savedMessage != null)
+                            {
+                                <div class="alert-success">
+                                    @ViewBag.savedMessage
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        }
+
+        </div>
+        </div>
+    @section scripts
+{
+            <script src="~/Scripts/jquery.validate.min.js"></script>
+            <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+            <script src="~/Time/js/bootstrap-datetimepicker.min.js"></script>
+
+            <script type="text/javascript">
+                $(function () {
+                    $('#Date').datetimepicker();
+                });
+            </script>
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

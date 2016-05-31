@@ -1,0 +1,217 @@
+﻿@using UniversityManagmentApp.Models
+
+@*@model IEnumerable<StudentResult>
+    @{
+        ViewBag.Title = "ViewResult";
+        //var grid = new WebGrid(source: Model, canPage: true, canSort: false);
+        var grid = new System.Web.Helpers.WebGrid(
+        source: Model,
+        columnNames: new List<string>() { "Title" },
+        ajaxUpdateContainerId: "myGrid",
+        defaultSort: "Id",
+        canPage: true,
+        canSort: true
+        );
+        grid.SortDirection = SortDirection.Ascending;
+
+    }*@
+
+<style type="text/css">
+    table.gridtable {
+        font-family: verdana,arial,sans-serif;
+        font-size: 11px;
+        color: #333333;
+        border-width: 1px;
+        border-color: #666666;
+        border-collapse: collapse;
+    }
+
+        table.gridtable th {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
+            color: darkgreen;
+        }
+
+        table.gridtable td {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+</style>
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+
+
+        <h2>ViewResult</h2>
+        <form action="~/Webgrid/GetPdf" method="POST" class="form-horizontal">
+            <table>
+                <tr>
+                    <td><label>Registration No:</label></td>
+                    <td>
+                        <select name="regNo" id="regNo" class="form-control">
+                            <option value="">--Select--</option>
+                            @foreach (var student in ViewBag.studentbag)
+                            {
+                                <option value="@student.Id">@student.RegNo</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Name:</label></td>
+                    <td>
+                        <input type="text" name="name" id="name" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Email:</label></td>
+                    <td>
+                        <input type="text" name="email" id="email" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Department:</label></td>
+                    <td>
+                        <input type="text" name="department" id="department" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" id="pdf" name="pdf" alt="Export to PDF" class="btn btn-success" value="Make PDF"  /></td>
+                </tr>
+            </table>
+
+
+
+
+            <table class="table table-bordered table-hover table-responsive table-striped" id="courseTable">
+                <thead>
+                    <tr>
+                        <td>Course Code</td>
+                        <td>Course Name</td>
+                        <td>Grade</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+
+            @*<div id="gridContainer">
+                    <div id="grid">
+                        @grid.GetHtml(
+                        tableStyle: "table",
+                        alternatingRowStyle: "alternate",
+                        headerStyle: "header",
+                        columns: grid.Columns(
+                                     grid.Column("CourseCode", "Course Code"),
+                                     grid.Column("CourseName", "Course Name"),
+                                     grid.Column("Grade", "Grade")
+
+                        )
+                    )
+
+                    </div>
+                </div>*@
+
+        </form>
+        </div>
+        </div>
+        @section scripts
+{
+            <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+            <script>
+
+                function viewResult() {
+
+                    var table = $("#courseTable").DataTable();
+                    $("#courseTable").hide();
+                    var id = $("#regNo").val();
+                    var json = { id: id };
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/ViewResult/GetResultByStudentId',
+
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(json),
+                        success: function (data) {
+                            table.clear();
+                            $("#courseTable").show();
+
+                            $.each(data, function (key, value) {
+
+                                //alert(value.CourseName)
+                                table.row.add([
+
+                                    value.CourseCode,
+                                    value.CourseName,
+                                    value.Grade
+
+                                ]).draw(false);
+
+                            });
+                            $("#courseTable").DataTable();
+
+                        }
+                    });
+                };
+
+
+
+                $("#regNo").change(function () {
+
+                    var id = $("#regNo").val();
+
+                    //$("#teacherId").empty();
+                    //$("#teacherId").append('<option value="">--Select Teacher--</option>');
+
+                    var jsonStudentInfo = { id: id };
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/ViewResult/GetStudentInfo',
+                        //url: '@Url.Action("GetStudentInfo", "ViewResult")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(jsonStudentInfo),
+                        success: function (data) {
+                            //alert(data);
+                            //table.clear();
+                            //$("#studentTable").show();
+                            $.each(data, function (key, value) {
+                                //alert(value.Id);
+                                //$("#teacherId").append('<option value=' + value.Id + '>' + value.Name + '</option>');
+                                $("#name").val(value.Name)
+                                $("#email").val(value.Email)
+                                $("#department").val(value.Department)
+
+                                viewResult();
+
+                                //$("#CreditToBeTaken").append(value.CreditToBeTaken)
+                                //$("#RemainingCredit").append(value.RemainingCredit)
+                                //table.row.add([
+                                //    value.StudentId,
+                                //    value.Name,
+                                //    value.DepartmentId
+                                //]).draw(false);
+                                //$("#studentTableTbody").append('<tr><td>' + value.StudentId + '</td><td>' + value.Name + '</td><td>' + value.DepartmentId + '</td></tr>');
+                            });
+
+
+                        }
+
+                    });
+
+                });
+
+            </script>
+        }
+
+
+

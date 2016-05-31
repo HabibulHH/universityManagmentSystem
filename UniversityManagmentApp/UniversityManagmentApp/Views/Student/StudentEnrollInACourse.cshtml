@@ -1,0 +1,244 @@
+﻿@using System.Web.UI.WebControls
+@model UniversityManagmentApp.Models.Student
+@{
+    //Layout = null;
+    ViewBag.Title = "StudentEnrollInACourse";
+}
+
+<link href="~/Time/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+
+@section styles
+{
+    <link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+}
+
+<h1>Student Enroll In A Course</h1>
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+        <form method="POST" id="myForm">
+            <table>
+                <tr>
+                    <td>
+                        <label for="studentId">Student Reg. No.</label>
+                    </td>
+                    <td>
+                        <select name="studentId" id="studentId" class="form-control">
+                            <option value="">...Select ...</option>
+                            @foreach (var student in ViewBag.Students)
+                            {
+                                <option value="@student.Id">@student.RegNo</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td><label>Name</label></td>
+                    <td>
+                        <input type="text" name="Name" id="Name" class="form-control" />
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td><label>Email</label></td>
+                    <td>
+                        <input type="text" name="Email" id="Email" class="form-control" />
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td><label>Department</label></td>
+                    <td>
+                        <input type="text" name="Department" id="Department" class="form-control" />
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>
+                        <input type="text" name="DepartmentId" id="DepartmentId" hidden />
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td><label for="courseId">Select Course</label></td>
+                    <td>
+                        <select name="courseId" id="courseId" class="form-control"></select>
+                    </td>
+                </tr>
+
+                <tr>
+
+                    <td>
+                        @Html.LabelFor(m => m.Date)
+                    </td>
+                    <td>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class='input-group date' id='datetimepicker1'>
+                                    <input type='text' id="Date" name="Date" class="form-control" />
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </td>
+
+
+
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td><input type="submit" id="Submit" value="Submit" class="btn btn- success" /></td>
+                </tr>
+            </table>
+
+
+        </form>
+
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Time/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#Date').datetimepicker();
+        });
+    </script>
+
+    <script>
+                $(document).ready(function () {
+
+
+                    //$(function () {
+                    //    $("#datepicker").datepicker({
+                    //        minDate: 0,
+                    //        maxDate: 0
+                    //    });
+                    //});
+
+
+
+                    function courseLoadFunction() {
+
+                        var studentId = $("#studentId").val();
+                        var departmentId = $("#DepartmentId").val();
+
+                        $("#courseId").empty();
+                        $("#courseId").append('<option value="">--Select Course--</option>');
+                        var jsonCourse = { deptId: departmentId, stuId: studentId };
+                        //alert(departmentId)
+                        $.ajax({
+                            type: "POST",
+                            url: '/Student/GetCourseByDepartmentIdStudentId',
+                            //url: '@Url.Action("GetCourseByDepartmentId", "Teacher")',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(jsonCourse),
+                            success: function (data) {
+                                //alert(data);
+                                //table.clear();
+                                //$("#studentTable").show();
+                                $.each(data, function (key, value) {
+                                    //alert(value.Id);
+                                    $("#courseId").append('<option value=' + value.Id + '>' + value.Name + '</option>');
+                                    //table.row.add([
+                                    //    value.StudentId,
+                                    //    value.Name,
+                                    //    value.DepartmentId
+                                    //]).draw(false);
+                                    //$("#studentTableTbody").append('<tr><td>' + value.StudentId + '</td><td>' + value.Name + '</td><td>' + value.DepartmentId + '</td></tr>');
+                                });
+                            }
+
+                        });
+
+                    };
+
+                    function studentLoadFunction() {
+
+                        var studentId = $("#studentId").val();
+
+                        var jsonStudent = { stuId: studentId };
+
+                        $.ajax({
+                            type: "POST",
+                            url: '/Student/GetAllStudentByStudentId',
+                            //url: '@Url.Action("GetTeacherCreditInfo", "Teacher")',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(jsonStudent),
+                            success: function (data) {
+
+                                $.each(data, function (key, value) {
+
+                                    $("#Name").val(value.Name)
+                                    $("#Email").val(value.Email)
+                                    $("#Department").val(value.DepartmentName)
+                                    $("#DepartmentId").val(value.Department)
+                                    courseLoadFunction();
+                                });
+                            }
+
+                        });
+
+                    };
+
+
+
+
+                    $("#studentId").change(function () {
+
+                        studentLoadFunction();
+
+                    });
+
+
+
+                    //$("#studentId").change(function () {
+
+                    //    courseLoadFunction();
+                    //});
+
+
+
+                    $("#Submit").click(function () {
+
+                        var studentId = $("#studentId").val();
+                        var courseId = $("#courseId").val();
+                        var date = $("#Date").val();
+                        //alert(date)
+                        var json = { stuId: studentId, courseId: courseId, date: date };
+
+                        $.ajax({
+                            type: "POST",
+                            url: '/Student/Save',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(json),
+                            success: function (message) {
+                                alert(message);
+
+                                courseLoadFunction();
+                            }
+                        });
+                        return false;
+                    });
+
+                });
+    </script>
+}
+
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+﻿@using System.Web.UI.WebControls
+
+@{
+    //Layout = null;
+    ViewBag.Title = "UnAllocateAllClassroom";
+}
+
+@section styles
+{
+    <link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+}
+
+<h1>Unallocate All Classroom</h1>
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+
+        <form method="POST" id="myForm" class="form-horizontal">
+            <table>
+
+                <tr>
+                    <td></td>
+                    @*<td><input type="submit" id="Submit" value="Submit" class="btn btn-default" /></td>*@
+                    <td><input type="button" id="Submit1" value="Unassign Classroom" class="btn btn-success" /></td>
+                </tr>
+
+            </table>
+        </form>
+
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            function save() {
+
+                if (confirm("Are you sure to unassign all classroom?")) {
+
+                    var id = 1;
+                    var json = {id:id};
+                    //alert("Test")
+                    $.ajax({
+                        type: "POST",
+                        url: '/UnAllocateAllClassroom/Update',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(json),
+                        success: function (message) {
+                            alert(message);
+
+                        }
+                    });
+                }
+            }
+
+
+
+            $("#Submit1").click(function () {
+
+                save();
+
+            });
+
+
+
+
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

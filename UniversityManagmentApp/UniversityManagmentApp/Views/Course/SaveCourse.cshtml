@@ -1,0 +1,112 @@
+﻿@using System.Activities.Expressions
+@model UniversityManagmentApp.Models.Courses
+@using System.Collections
+@using UniversityManagmentApp.Models
+
+@{
+    ViewBag.Title = "SaveCourse";
+}
+<div class="row">
+<div class="col-md-6 col-md-offset-3">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new {@class = "form-horizontal"}))
+    {
+        <fieldset>
+            <legend>Save Course</legend>
+            <table>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.Code)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Code, new {@class = "form-control"})
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.Code)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.Name)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Name, new {@class = "form-control"})
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.Name)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.Credit)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Credit, new {@class = "form-control"})
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.Credit)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.Description)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Description, new {@class = "form-control"})
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.Description)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.DepartmentCode)
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.DepartmentCode, new SelectList(ViewBag.departmentBag, "Value", "Text"), new {@class = "form-control"})
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.DepartmentCode)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.SemesterId)
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.SemesterId, new SelectList(ViewBag.semesterBag, "Value", "Text"), new {@class = "form-control"})
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.SemesterId)
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" class="btn btn-default" id="save" value="Save" name="save"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        @if (ViewBag.saveMessage != null)
+                        {
+                            <div class="text-danger">
+                                @ViewBag.saveMessage
+                            </div>
+                        }
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    }
+
+</div>
+    </div>
+    @section scripts
+    { 
+        <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    }
+
+
